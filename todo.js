@@ -18,7 +18,7 @@ function ToDoApp(props) {
 }
 
 const listItems = ["hoge","foo"].map((todo) =>
-  <li>{todo}</li>
+  <li key={todo}>{todo}</li>
 );
 
 const todoApp = ReactDOM.createRoot(document.getElementById("todoList"));
