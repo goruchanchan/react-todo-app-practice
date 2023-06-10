@@ -1,3 +1,26 @@
+class ToDoApp extends React.Component {
+  constructor(props) {
+    super(props);
+    const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
+
+    if (tempLocalStorageTodoItems === null) {
+      this.state = { todoItems: [] };
+    } else {
+      this.state = { todoItems: JSON.parse(tempLocalStorageTodoItems) };
+    }
+  }
+
+  render() {
+    return (
+      <div className="ToDoApp">
+        <h1>ToDoアプリ</h1>
+        <AddTodo todoItems={this.state.todoItems} />
+        {/* <TodoTable todoItems={this.props.todoItems} /> */}
+      </div>
+    );
+  }
+}
+
 class AddTodo extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +44,7 @@ class AddTodo extends React.Component {
     });
 
     localStorage.setItem("todoItems", JSON.stringify(this.state.todoItems));
+    this.setState({ todo: "" });
     event.preventDefault();
   }
 
@@ -31,7 +55,7 @@ class AddTodo extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
-            value={this.state.value}
+            value={this.state.todo}
             onChange={this.handleChange}
           />
           <input type="submit" value="追加" />
@@ -65,24 +89,8 @@ class TodoTable extends React.Component {
   }
 }
 
-class ToDoApp extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="ToDoApp">
-        <h1>ToDoアプリ</h1>
-        <AddTodo todoItems={this.props.todoItems} />
-        <TodoTable todoItems={this.props.todoItems} />
-      </div>
-    );
-  }
-}
-
 const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
 const listItems = JSON.parse(tempLocalStorageTodoItems);
 
 const todoApp = ReactDOM.createRoot(document.getElementById("todoList"));
-todoApp.render(<ToDoApp todoItems={listItems} />);
+todoApp.render(<ToDoApp />);
