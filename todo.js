@@ -1,9 +1,21 @@
 class ToDoApp extends React.Component {
+  constructor(props) {
+    super(props);
+    const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
+
+    if (tempLocalStorageTodoItems === null) {
+      this.state = { todoItems: [] };
+      this.count = 0;
+    } else {
+      this.state = { todoItems: JSON.parse(tempLocalStorageTodoItems) };
+      this.count = localStorage.getItem("maxId");
+    }
+  }
   render() {
     return (
       <div className="ToDoApp">
         <h1>ToDoアプリ</h1>
-        <AddTodo />
+        <AddTodo maxId={this.count} todoItems={this.state.todoItems} />
         <TodoTable />
       </div>
     );
@@ -13,18 +25,8 @@ class ToDoApp extends React.Component {
 class AddTodo extends React.Component {
   constructor(props) {
     super(props);
-    const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
-
-    if (tempLocalStorageTodoItems === null) {
-      this.state = { todo: "", todoItems: [] };
-      this.count = 0;
-    } else {
-      this.state = {
-        todo: "",
-        todoItems: JSON.parse(tempLocalStorageTodoItems),
-      };
-      this.count = localStorage.getItem("maxId");
-    }
+    this.state = { todo: "", todoItems: this.props.todoItems };
+    this.count = this.props.maxId;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
