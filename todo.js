@@ -8,24 +8,33 @@ class ToDoApp extends React.Component {
       this.count = 0;
     } else {
       this.state = { todoItems: JSON.parse(tempLocalStorageTodoItems) };
-      this.count = localStorage.getItem("maxId");
+      this.count = Number(localStorage.getItem("maxId")) + 1;
     }
+    this.handleAddNewTodo = this.handleAddNewTodo.bind(this);
   }
+
+  handleAddNewTodo(newTodo) {
+    const updatedTodoItems = [...this.state.todoItems, newTodo];
+    this.setState({ todoItems: updatedTodoItems, count: this.count + 1 });
+    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+    localStorage.setItem("maxId", this.count + 1);
+  }
+
   render() {
     return (
       <div className="ToDoApp">
         <h1>ToDoアプリ</h1>
-        <AddTodo maxId={this.count} todoItems={this.state.todoItems} />
-        <TodoTable />
+        <AddNewTodo onAddNewTodo={this.handleAddNewTodo} maxId={this.count} />
+        <TodoTable todoItems={this.state.todoItems} />
       </div>
     );
   }
 }
 
-class AddTodo extends React.Component {
+class AddNewTodo extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { todo: "", todoItems: this.props.todoItems };
+    this.state = { todo: "" };
     this.count = this.props.maxId;
 
     this.handleChange = this.handleChange.bind(this);
@@ -37,22 +46,20 @@ class AddTodo extends React.Component {
   }
 
   handleSubmit(event) {
-    this.state.todoItems.push({
+    this.props.onAddNewTodo({
       id: this.count++,
       text: this.state.todo,
       // editingText: this.newTodoText,
       // isEditing: false,
     });
 
-    localStorage.setItem("todoItems", JSON.stringify(this.state.todoItems));
-    localStorage.setItem("maxId", this.count);
     this.setState({ todo: "" });
     event.preventDefault();
   }
 
   render() {
     return (
-      <div className="AddTodo">
+      <div className="AddNewTodo">
         <h2>ToDo追加</h2>
         <form onSubmit={this.handleSubmit}>
           <input
@@ -68,24 +75,22 @@ class AddTodo extends React.Component {
 }
 
 class TodoTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { todoItems: [] };
-  }
-
   render() {
-    const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
-    if (tempLocalStorageTodoItems !== null)
-      this.setState({ todoItems: JSON.parse(tempLocalStorageTodoItems) });
-
     return (
       <div className="TodoTable">
         <h2>ToDo一覧</h2>
-        <ul>
-          {this.state.todoItems.map((todo) => (
-            <li key={todo.id}>{todo.text}</li>
-          ))}
-        </ul>
+        <table>
+          <tbody>
+            {this.props.todoItems.map((todo) => (
+              <tr key={todo.id}>
+                <td>{todo.text}</td>
+                <td>
+                  <button >削除</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }
