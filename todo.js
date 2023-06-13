@@ -11,6 +11,7 @@ class ToDoApp extends React.Component {
       this.count = Number(localStorage.getItem("maxId")) + 1;
     }
     this.handleAddNewTodo = this.handleAddNewTodo.bind(this);
+    this.handleDeleteTodo = this.handleDeleteTodo.bind(this);
   }
 
   handleAddNewTodo(newTodo) {
@@ -20,12 +21,23 @@ class ToDoApp extends React.Component {
     localStorage.setItem("maxId", this.count + 1);
   }
 
+  handleDeleteTodo(targetTodo) {
+    const updatedTodoItems = this.state.todoItems.filter(
+      (todo) => !_.isEqual(todo, targetTodo)
+    );
+    this.setState({ todoItems: updatedTodoItems });
+    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+  }
+
   render() {
     return (
       <div className="ToDoApp">
         <h1>ToDoアプリ</h1>
         <AddNewTodo onAddNewTodo={this.handleAddNewTodo} maxId={this.count} />
-        <TodoTable todoItems={this.state.todoItems} />
+        <TodoTable
+          todoItems={this.state.todoItems}
+          onDeleteTodo={this.handleDeleteTodo}
+        />
       </div>
     );
   }
@@ -85,7 +97,9 @@ class TodoTable extends React.Component {
               <tr key={todo.id}>
                 <td>{todo.text}</td>
                 <td>
-                  <button >削除</button>
+                  <button onClick={() => this.props.onDeleteTodo(todo)}>
+                    削除
+                  </button>
                 </td>
               </tr>
             ))}
