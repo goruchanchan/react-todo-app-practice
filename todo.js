@@ -11,6 +11,7 @@ class ToDoApp extends React.Component {
       this.count = Number(localStorage.getItem("maxId")) + 1;
     }
     this.handleAddNewTodo = this.handleAddNewTodo.bind(this);
+    this.handleEditingTodo = this.handleEditingTodo.bind(this);
     this.handleDeleteTodo = this.handleDeleteTodo.bind(this);
   }
 
@@ -19,6 +20,13 @@ class ToDoApp extends React.Component {
     this.setState({ todoItems: updatedTodoItems, count: this.count + 1 });
     localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
     localStorage.setItem("maxId", this.count + 1);
+  }
+
+  handleEditingTodo(todo) {
+    todo.isEditing = !todo.isEditing;
+    const updatedTodoItems = [...this.state.todoItems];
+    this.setState({ todoItems: updatedTodoItems });
+    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
   }
 
   handleDeleteTodo(targetTodo) {
@@ -36,6 +44,7 @@ class ToDoApp extends React.Component {
         <AddNewTodo onAddNewTodo={this.handleAddNewTodo} maxId={this.count} />
         <TodoTable
           todoItems={this.state.todoItems}
+          onEditingTodo={this.handleEditingTodo}
           onDeleteTodo={this.handleDeleteTodo}
         />
       </div>
@@ -62,7 +71,7 @@ class AddNewTodo extends React.Component {
       id: this.count++,
       text: this.state.todo,
       // editingText: this.newTodoText,
-      // isEditing: false,
+      isEditing: true,
     });
 
     this.setState({ todo: "" });
@@ -96,6 +105,11 @@ class TodoTable extends React.Component {
             {this.props.todoItems.map((todo) => (
               <tr key={todo.id}>
                 <td>{todo.text}</td>
+                <td>
+                  <button onClick={() => this.props.onEditingTodo(todo)}>
+                    {todo.isEditing ? "確定" : "編集"}
+                  </button>
+                </td>
                 <td>
                   <button onClick={() => this.props.onDeleteTodo(todo)}>
                     削除
