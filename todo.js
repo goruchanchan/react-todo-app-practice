@@ -17,16 +17,19 @@ class ToDoApp extends React.Component {
 
   handleAddNewTodo(newTodo) {
     const updatedTodoItems = [...this.state.todoItems, newTodo];
-    this.setState({ todoItems: updatedTodoItems, count: this.count + 1 });
+    this.setState({ todoItems: updatedTodoItems, count: this.count });
     localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
-    localStorage.setItem("maxId", this.count + 1);
+    localStorage.setItem("maxId", this.count);
   }
 
-  handleEditingTodo(todo) {
-    todo.isEditing = !todo.isEditing;
+  handleEditingTodo(targetTodo, editedText) {
     const updatedTodoItems = [...this.state.todoItems];
+
+    if (targetTodo.isEditing) updatedTodoItems[targetTodo.id].text = editedText;
     this.setState({ todoItems: updatedTodoItems });
     localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+
+    targetTodo.isEditing = !targetTodo.isEditing;
   }
 
   handleDeleteTodo(targetTodo) {
@@ -70,8 +73,7 @@ class AddNewTodo extends React.Component {
     this.props.onAddNewTodo({
       id: this.count++,
       text: this.state.todo,
-      // editingText: this.newTodoText,
-      isEditing: true,
+      isEditing: false,
     });
 
     this.setState({ todo: "" });
@@ -96,6 +98,17 @@ class AddNewTodo extends React.Component {
 }
 
 class TodoTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { editedTexts: {} };
+    this.handleEditInputChange = this.handleEditInputChange.bind(this);
+  }
+
+  handleEditInputChange(event, todo) {
+    const tempEditedTexts = { ...this.state.editedTexts };
+    tempEditedTexts[todo.id] = event.target.value;
+    this.setState({ editedTexts:tempEditedTexts });
+  }
   render() {
     return (
       <div className="TodoTable">
@@ -104,9 +117,28 @@ class TodoTable extends React.Component {
           <tbody>
             {this.props.todoItems.map((todo) => (
               <tr key={todo.id}>
-                <td>{todo.text}</td>
                 <td>
-                  <button onClick={() => this.props.onEditingTodo(todo)}>
+                  {todo.isEditing ? (
+                    <input
+                      type="text"
+                      value={this.state.editedTexts[todo.id] || todo.text}
+                      onChange={(event) =>
+                        this.handleEditInputChange(event, todo)
+                      }
+                    />
+                  ) : (
+                    todo.text
+                  )}
+                </td>
+                <td>
+                  <button
+                    onClick={() =>
+                      this.props.onEditingTodo(
+                        todo,
+                        this.state.editedTexts[todo.id]
+                      )
+                    }
+                  >
                     {todo.isEditing ? "確定" : "編集"}
                   </button>
                 </td>
