@@ -4,11 +4,12 @@ class ToDoApp extends React.Component {
     const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
 
     if (tempLocalStorageTodoItems === null) {
-      this.state = { todoItems: [] };
-      this.count = 0;
+      this.state = { todoItems: [], maxId: 0 };
     } else {
-      this.state = { todoItems: JSON.parse(tempLocalStorageTodoItems) };
-      this.count = Number(localStorage.getItem("maxId")) + 1;
+      this.state = {
+        todoItems: JSON.parse(tempLocalStorageTodoItems),
+        maxId: Number(localStorage.getItem("maxId")),
+      };
     }
     this.handleAddNewTodo = this.handleAddNewTodo.bind(this);
     this.handleEditingTodo = this.handleEditingTodo.bind(this);
@@ -17,19 +18,20 @@ class ToDoApp extends React.Component {
 
   handleAddNewTodo(newTodo) {
     const updatedTodoItems = [...this.state.todoItems, newTodo];
-    this.setState({ todoItems: updatedTodoItems, count: this.count });
+    const updatedMaxId = Number(newTodo.id) + 1;
+    this.setState({ todoItems: updatedTodoItems, maxId: updatedMaxId });
     localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
-    localStorage.setItem("maxId", this.count);
+    localStorage.setItem("maxId", updatedMaxId);
   }
 
   handleEditingTodo(targetTodo, editedText) {
     const updatedTodoItems = [...this.state.todoItems];
 
-    if (targetTodo.isEditing) updatedTodoItems[targetTodo.id].text = editedText;
-    this.setState({ todoItems: updatedTodoItems });
-    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+    if (targetTodo.isEditing) targetTodo.text = editedText;
 
+    this.setState({ todoItems: updatedTodoItems });
     targetTodo.isEditing = !targetTodo.isEditing;
+    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
   }
 
   handleDeleteTodo(targetTodo) {
@@ -44,7 +46,10 @@ class ToDoApp extends React.Component {
     return (
       <div className="ToDoApp">
         <h1>ToDoアプリ</h1>
-        <AddNewTodo onAddNewTodo={this.handleAddNewTodo} maxId={this.count} />
+        <AddNewTodo
+          onAddNewTodo={this.handleAddNewTodo}
+          maxId={this.state.maxId}
+        />
         <TodoTable
           todoItems={this.state.todoItems}
           onEditingTodo={this.handleEditingTodo}
@@ -71,12 +76,13 @@ class AddNewTodo extends React.Component {
 
   handleSubmit(event) {
     this.props.onAddNewTodo({
-      id: this.count++,
+      id: this.count,
       text: this.state.todo,
       isEditing: false,
     });
 
     this.setState({ todo: "" });
+    this.count++;
     event.preventDefault();
   }
 
@@ -107,7 +113,7 @@ class TodoTable extends React.Component {
   handleEditInputChange(event, todo) {
     const tempEditedTexts = { ...this.state.editedTexts };
     tempEditedTexts[todo.id] = event.target.value;
-    this.setState({ editedTexts:tempEditedTexts });
+    this.setState({ editedTexts: tempEditedTexts });
   }
   render() {
     return (
