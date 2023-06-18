@@ -63,7 +63,7 @@ class ToDoApp extends React.Component {
 class AddNewTodo extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { todo: "" };
+    this.state = { todo: "", noInput: false };
     this.count = this.props.maxId;
 
     this.handleChange = this.handleChange.bind(this);
@@ -71,22 +71,37 @@ class AddNewTodo extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({ todo: event.target.value });
+    this.setState({ todo: event.target.value, noInput: false });
   }
 
   handleSubmit(event) {
+    event.preventDefault();
+
+    if (this.state.todo === "") {
+      this.setState({ noInput: true });
+      return;
+    }
+
     this.props.onAddNewTodo({
       id: this.count,
       text: this.state.todo,
       isEditing: false,
     });
 
-    this.setState({ todo: "" });
+    this.setState({ todo: "", error: false });
     this.count++;
-    event.preventDefault();
   }
 
   render() {
+    let errorMessage = null;
+    if (this.state.noInput) {
+      errorMessage = (
+        <div class="error">
+          <p>ToDoを入力してください</p>
+        </div>
+      );
+    }
+
     return (
       <div className="AddNewTodo">
         <h2>ToDo追加</h2>
@@ -98,6 +113,7 @@ class AddNewTodo extends React.Component {
           />
           <input type="submit" value="追加" />
         </form>
+        {errorMessage}
       </div>
     );
   }
