@@ -141,7 +141,7 @@ class TodoTable extends React.Component {
                     onClick={() =>
                       this.props.onEditingTodo(
                         todo,
-                        this.state.editedTexts[todo.id]
+                        this.state.editedTexts[todo.id] || todo.text
                       )
                     }
                   >
