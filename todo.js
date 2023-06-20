@@ -122,13 +122,13 @@ class AddNewTodo extends React.Component {
 class TodoTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { editedTexts: {} };
+    this.state = { editedTexts: props.todoItems };
     this.handleEditInputChange = this.handleEditInputChange.bind(this);
   }
 
-  handleEditInputChange(event, todo) {
+  handleEditInputChange(event, index) {
     const tempEditedTexts = { ...this.state.editedTexts };
-    tempEditedTexts[todo.id] = event.target.value;
+    tempEditedTexts[index].text = event.target.value;
     this.setState({ editedTexts: tempEditedTexts });
   }
   render() {
@@ -137,15 +137,15 @@ class TodoTable extends React.Component {
         <h2>ToDo一覧</h2>
         <table>
           <tbody>
-            {this.props.todoItems.map((todo) => (
+            {this.props.todoItems.map((todo, index) => (
               <tr key={todo.id}>
                 <td>
                   {todo.isEditing ? (
                     <input
                       type="text"
-                      value={this.state.editedTexts[todo.id] || todo.text}
+                      value={this.state.editedTexts[index].text}
                       onChange={(event) =>
-                        this.handleEditInputChange(event, todo)
+                        this.handleEditInputChange(event, index)
                       }
                     />
                   ) : (
@@ -157,7 +157,7 @@ class TodoTable extends React.Component {
                     onClick={() =>
                       this.props.onEditingTodo(
                         todo,
-                        this.state.editedTexts[todo.id] || todo.text
+                        this.state.editedTexts[index].text
                       )
                     }
                   >
