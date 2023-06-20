@@ -51,6 +51,7 @@ class ToDoApp extends React.Component {
           maxId={this.state.maxId}
         />
         <TodoTable
+          maxId={this.state.maxId}
           todoItems={this.state.todoItems}
           onEditingTodo={this.handleEditingTodo}
           onDeleteTodo={this.handleDeleteTodo}
@@ -122,8 +123,17 @@ class AddNewTodo extends React.Component {
 class TodoTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { editedTexts: props.todoItems };
+    this.state = { maxId: props.maxId, editedTexts: props.todoItems };
     this.handleEditInputChange = this.handleEditInputChange.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.maxId !== this.props.maxId) {
+      this.setState({
+        maxId: this.props.maxId,
+        editedTexts: this.props.todoItems,
+      });
+    }
   }
 
   handleEditInputChange(event, index) {
@@ -131,6 +141,7 @@ class TodoTable extends React.Component {
     tempEditedTexts[index].text = event.target.value;
     this.setState({ editedTexts: tempEditedTexts });
   }
+
   render() {
     return (
       <div className="TodoTable">
