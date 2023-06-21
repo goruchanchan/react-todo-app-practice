@@ -27,10 +27,18 @@ class ToDoApp extends React.Component {
   handleEditingTodo(targetTodo, editedText) {
     const updatedTodoItems = [...this.state.todoItems];
 
+    if (editedText === "") {
+      targetTodo.noEditingInput = true;
+      this.setState({ todoItems: updatedTodoItems });
+      return;
+    }
+
     if (targetTodo.isEditing) targetTodo.text = editedText;
 
-    this.setState({ todoItems: updatedTodoItems });
     targetTodo.isEditing = !targetTodo.isEditing;
+    targetTodo.noEditingInput = false;
+
+    this.setState({ todoItems: updatedTodoItems });
     localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
   }
 
@@ -87,6 +95,7 @@ class AddNewTodo extends React.Component {
       id: this.count,
       text: this.state.todo,
       isEditing: false,
+      noEditingInput: false,
     });
 
     this.setState({ todo: "", error: false });
@@ -97,7 +106,7 @@ class AddNewTodo extends React.Component {
     let errorMessage = null;
     if (this.state.noInput) {
       errorMessage = (
-        <div class="error">
+        <div className="error">
           <p>ToDoを入力してください</p>
         </div>
       );
@@ -179,6 +188,13 @@ class TodoTable extends React.Component {
                   <button onClick={() => this.props.onDeleteTodo(todo)}>
                     削除
                   </button>
+                </td>
+                <td>
+                  {todo.noEditingInput ? (
+                    <div className="error">ToDoを入力してください</div>
+                  ) : (
+                    ""
+                  )}
                 </td>
               </tr>
             ))}
