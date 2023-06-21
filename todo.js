@@ -1,75 +1,75 @@
 class ToDoApp extends React.Component {
   constructor(props) {
     super(props);
-    const tempLocalStorageTodoItems = localStorage.getItem("todoItems");
+    const tempLocalStorageToDoItems = localStorage.getItem("todoItems");
 
-    if (tempLocalStorageTodoItems === null) {
+    if (tempLocalStorageToDoItems === null) {
       this.state = { todoItems: [], maxId: 0 };
     } else {
       this.state = {
-        todoItems: JSON.parse(tempLocalStorageTodoItems),
+        todoItems: JSON.parse(tempLocalStorageToDoItems),
         maxId: Number(localStorage.getItem("maxId")),
       };
     }
-    this.handleAddNewTodo = this.handleAddNewTodo.bind(this);
-    this.handleEditingTodo = this.handleEditingTodo.bind(this);
-    this.handleDeleteTodo = this.handleDeleteTodo.bind(this);
+    this.handleAddNewToDo = this.handleAddNewToDo.bind(this);
+    this.handleEditingToDo = this.handleEditingToDo.bind(this);
+    this.handleDeleteToDo = this.handleDeleteToDo.bind(this);
   }
 
-  handleAddNewTodo(newTodo) {
-    const updatedTodoItems = [...this.state.todoItems, newTodo];
-    const updatedMaxId = Number(newTodo.id) + 1;
-    this.setState({ todoItems: updatedTodoItems, maxId: updatedMaxId });
-    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+  handleAddNewToDo(newToDo) {
+    const updatedToDoItems = [...this.state.todoItems, newToDo];
+    const updatedMaxId = Number(newToDo.id) + 1;
+    this.setState({ todoItems: updatedToDoItems, maxId: updatedMaxId });
+    localStorage.setItem("todoItems", JSON.stringify(updatedToDoItems));
     localStorage.setItem("maxId", updatedMaxId);
   }
 
-  handleEditingTodo(targetTodo, editedText) {
-    const updatedTodoItems = [...this.state.todoItems];
+  handleEditingToDo(targetToDo, editedText) {
+    const updatedToDoItems = [...this.state.todoItems];
 
     if (editedText === "") {
-      targetTodo.noEditingInput = true;
-      this.setState({ todoItems: updatedTodoItems });
+      targetToDo.noEditingInput = true;
+      this.setState({ todoItems: updatedToDoItems });
       return;
     }
 
-    if (targetTodo.isEditing) targetTodo.text = editedText;
+    if (targetToDo.isEditing) targetToDo.text = editedText;
 
-    targetTodo.isEditing = !targetTodo.isEditing;
-    targetTodo.noEditingInput = false;
+    targetToDo.isEditing = !targetToDo.isEditing;
+    targetToDo.noEditingInput = false;
 
-    this.setState({ todoItems: updatedTodoItems });
-    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+    this.setState({ todoItems: updatedToDoItems });
+    localStorage.setItem("todoItems", JSON.stringify(updatedToDoItems));
   }
 
-  handleDeleteTodo(targetTodo) {
-    const updatedTodoItems = this.state.todoItems.filter(
-      (todo) => !_.isEqual(todo, targetTodo)
+  handleDeleteToDo(targetToDo) {
+    const updatedToDoItems = this.state.todoItems.filter(
+      (todo) => !_.isEqual(todo, targetToDo)
     );
-    this.setState({ todoItems: updatedTodoItems });
-    localStorage.setItem("todoItems", JSON.stringify(updatedTodoItems));
+    this.setState({ todoItems: updatedToDoItems });
+    localStorage.setItem("todoItems", JSON.stringify(updatedToDoItems));
   }
 
   render() {
     return (
       <div className="ToDoApp">
         <h1>ToDoアプリ</h1>
-        <AddNewTodo
-          onAddNewTodo={this.handleAddNewTodo}
+        <AddNewToDo
+          onAddNewToDo={this.handleAddNewToDo}
           maxId={this.state.maxId}
         />
-        <TodoTable
+        <ToDoTable
           maxId={this.state.maxId}
           todoItems={this.state.todoItems}
-          onEditingTodo={this.handleEditingTodo}
-          onDeleteTodo={this.handleDeleteTodo}
+          onEditingToDo={this.handleEditingToDo}
+          onDeleteToDo={this.handleDeleteToDo}
         />
       </div>
     );
   }
 }
 
-class AddNewTodo extends React.Component {
+class AddNewToDo extends React.Component {
   constructor(props) {
     super(props);
     this.state = { todo: "", noInput: false };
@@ -91,7 +91,7 @@ class AddNewTodo extends React.Component {
       return;
     }
 
-    this.props.onAddNewTodo({
+    this.props.onAddNewToDo({
       id: this.count,
       text: this.state.todo,
       isEditing: false,
@@ -113,7 +113,7 @@ class AddNewTodo extends React.Component {
     }
 
     return (
-      <div className="AddNewTodo">
+      <div className="AddNewToDo">
         <h2>ToDo追加</h2>
         <form onSubmit={this.handleSubmit}>
           <input
@@ -129,7 +129,7 @@ class AddNewTodo extends React.Component {
   }
 }
 
-class TodoTable extends React.Component {
+class ToDoTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = { maxId: props.maxId, editedTexts: props.todoItems };
@@ -153,7 +153,7 @@ class TodoTable extends React.Component {
 
   render() {
     return (
-      <div className="TodoTable">
+      <div className="ToDoTable">
         <h2>ToDo一覧</h2>
         <table>
           <tbody>
@@ -175,7 +175,7 @@ class TodoTable extends React.Component {
                 <td>
                   <button
                     onClick={() =>
-                      this.props.onEditingTodo(
+                      this.props.onEditingToDo(
                         todo,
                         this.state.editedTexts[index].text
                       )
@@ -185,7 +185,7 @@ class TodoTable extends React.Component {
                   </button>
                 </td>
                 <td>
-                  <button onClick={() => this.props.onDeleteTodo(todo)}>
+                  <button onClick={() => this.props.onDeleteToDo(todo)}>
                     削除
                   </button>
                 </td>
