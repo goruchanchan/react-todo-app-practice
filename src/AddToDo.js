@@ -32,15 +32,6 @@ class AddToDo extends React.Component {
   }
 
   render() {
-    let errorMessage = null;
-    if (this.state.noInput) {
-      errorMessage = (
-        <div className="error">
-          <p>ToDoを入力してください</p>
-        </div>
-      );
-    }
-
     return (
       <div className="AddNewToDo">
         <h2>ToDo追加</h2>
@@ -52,7 +43,11 @@ class AddToDo extends React.Component {
           />
           <input type="submit" value="追加" />
         </form>
-        {errorMessage}
+        {this.state.noInput && (
+          <div className="error">
+            <p>ToDoを入力してください</p>
+          </div>
+        )}
       </div>
     );
   }
