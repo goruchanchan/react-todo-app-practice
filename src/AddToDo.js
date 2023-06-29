@@ -33,7 +33,7 @@ class AddToDo extends React.Component {
 
   render() {
     return (
-      <div className="AddNewToDo">
+      <div className="add-to-do">
         <h2>ToDo追加</h2>
         <form onSubmit={this.handleSubmit}>
           <input

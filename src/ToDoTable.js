@@ -22,7 +22,7 @@ class ToDoTable extends React.Component {
 
   render() {
     return (
-      <div className="ToDoTable">
+      <div className="to-do-table">
         <h2>ToDo一覧</h2>
         <table>
           <tbody>

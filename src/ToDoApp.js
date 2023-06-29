@@ -52,7 +52,7 @@ class ToDoApp extends React.Component {
 
   render() {
     return (
-      <div className="ToDoApp">
+      <div className="to-do-app">
         <h1>ToDoアプリ</h1>
         <AddToDo
           onAddNewToDo={this.handleAddNewToDo}
