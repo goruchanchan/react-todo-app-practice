@@ -17,11 +17,11 @@ class ToDoApp extends React.Component {
   }
 
   handleAddNewToDo(newToDo) {
-    const updatedToDoItems = [...this.state.todoItems, newToDo];
-    const updatedMaxId = Number(newToDo.id) + 1;
-    this.setState({ todoItems: updatedToDoItems, maxId: updatedMaxId });
-    localStorage.setItem("todoItems", JSON.stringify(updatedToDoItems));
-    localStorage.setItem("maxId", updatedMaxId);
+    const toDoItems = [...this.state.todoItems, newToDo];
+    const maxId = Number(newToDo.id) + 1;
+    this.setState({ todoItems: toDoItems, maxId: maxId });
+    localStorage.setItem("todoItems", JSON.stringify(toDoItems));
+    localStorage.setItem("maxId", maxId);
   }
 
   handleEditingToDo(targetToDo, editedText) {
