@@ -24,20 +24,10 @@ class ToDoApp extends React.Component {
     localStorage.setItem("maxId", maxId);
   }
 
-  handleEditingToDo(targetToDo, editedText) {
-    const updatedToDoItems = [...this.state.todoItems];
-
-    if (editedText === "") {
-      targetToDo.noEditingInput = true;
-      this.setState({ todoItems: updatedToDoItems });
-      return;
-    }
-
-    if (targetToDo.isEditing) targetToDo.text = editedText;
-
-    targetToDo.isEditing = !targetToDo.isEditing;
-    targetToDo.noEditingInput = false;
-
+  handleEditingToDo(targetToDo) {
+    const updatedToDoItems = this.state.todoItems.map((todo) => {
+      return todo.id === targetToDo.id ? targetToDo : todo;
+    });
     this.setState({ todoItems: updatedToDoItems });
     localStorage.setItem("todoItems", JSON.stringify(updatedToDoItems));
   }
@@ -58,6 +48,7 @@ class ToDoApp extends React.Component {
           onAddNewToDo={this.handleAddNewToDo}
           maxId={this.state.maxId}
         />
+        <h2>ToDo一覧</h2>
         <ToDoTable
           maxId={this.state.maxId}
           todoItems={this.state.todoItems}

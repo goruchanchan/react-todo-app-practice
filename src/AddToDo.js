@@ -23,11 +23,9 @@ class AddToDo extends React.Component {
     this.props.onAddNewToDo({
       id: this.count,
       text: this.state.todo,
-      isEditing: false,
-      noEditingInput: false,
     });
 
-    this.setState({ todo: "", error: false });
+    this.setState({ todo: "" });
     this.count++;
   }
 
@@ -43,11 +41,7 @@ class AddToDo extends React.Component {
           />
           <input type="submit" value="追加" />
         </form>
-        {this.state.noInput && (
-          <div className="error">
-            <p>ToDoを入力してください</p>
-          </div>
-        )}
+        {this.state.noInput ? <ErrorText /> : ""}
       </div>
     );
   }
